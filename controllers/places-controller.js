@@ -106,11 +106,18 @@ const updatePlaceById = async (req, res, next) => {
 
   try {
     place = await Place.findById(placeId);
+
+    if (place.creator.toString() !== req.userData.userId) {
+      throw new HttpError('Are you sure that you create this?', 401)
+    }
+
     place.title = title;
     place.description = description;
     await place.save()
   } catch (error) {
-    return next(new HttpError('Something went wrong. Place could not be updated', 500));
+    const httpError = new HttpError('Something went wrong. Place could not be updated', error.code || 500);
+    httpError.setDetails(error.message);
+    return next(httpError);
   }
 
   res.status(200).json(place.toObject({ getters: true }));
@@ -125,6 +132,10 @@ const deletePlace = async (req, res, next) => {
     place = await Place.findById(placeId).populate('creator');
     const imagePath = place.image;
 
+    if (place.creator.id !== req.userData.userId) {
+      throw new HttpError('Are you sure that you create this?', 401)
+    }
+
     mongooseSession.startTransaction();
     await place.remove({ session: mongooseSession });
     place.creator.places.pull(place);
@@ -135,7 +146,7 @@ const deletePlace = async (req, res, next) => {
       console.log(err);
     });
   } catch (e) {
-    const error = new HttpError('Something went wrong, could not delete the place.', 500);
+    const error = new HttpError('Something went wrong, could not delete the place.', e.code || 500);
     error.setDetails(e.message);
     return next(error);
   }

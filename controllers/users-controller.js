@@ -90,7 +90,7 @@ const login = async (req, res, next) => {
   }
 
   if (!existingUser || !isValidPassword) {
-    return next(new HttpError('Could not identify user', 401));
+    return next(new HttpError('Could not identify user', 403));
   }
 
   const token = jwt.sign(
