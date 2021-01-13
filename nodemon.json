@@ -1,0 +1,9 @@
+{
+  "env": {
+    "DB_USER": "phantomxjoker",
+    "DB_PASSWORD": "123123123",
+    "DB_NAME": "places",
+    "GOOGLE_API_KEY": "AIzaSyASprCXDu2Nx3s_uSa3bEQ3YrAABKgC_j8",
+    "JWT_KEY": "supersecret_dont_share"
+  }
+}
