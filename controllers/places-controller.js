@@ -58,12 +58,12 @@ const getPlacesByUserId = async (req, res, next) => {
 const createPlace = async (req, res, next) => {
   inputErrorValidator(req, res, next);
 
-  const { body: { title, description, address, creator } } = req;
+  const { body: { title, description, address } } = req;
   let coordinates;
   let user;
 
   try {
-    user = await User.findById(creator);
+    user = await User.findById(req.userData.userId);
   } catch (error) {
     return next(new HttpError('Place could not be created by an user error', 500));
   }
@@ -80,7 +80,7 @@ const createPlace = async (req, res, next) => {
     address,
     location: coordinates,
     image: req.file.path,
-    creator,
+    creator: req.userData.userId,
   });
 
   try {

@@ -13,6 +13,7 @@ const app = express();
 
 app.use(bodyParser.json());
 
+// This expose the directory
 app.use('/uploads/images', express.static(path.join('uploads', 'images')));
 
 app.use((req, res, next) => {
